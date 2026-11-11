@@ -38,4 +38,4 @@ python -m pytest tests/ -v
 
 ## Live demo
 
-https://muse.ai/s/safesort-quarantine-agent-og6n6lp6x0xgm/DWUU-pBPKZA-RNR9O1nQCy6XYdbAqCkoPqcvXhn7wO0
+https://brandonkarimi.github.io/safesort/
