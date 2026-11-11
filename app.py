@@ -1,7 +1,7 @@
 """
-app.py - Flask server for SafeSort, my CS4680 Assignment 4 project.
+app.py - Flask server for SafeSort.
 
-Architecture I used:
+Architecture:
   web UI -> Flask server -> scanner (local inventory + risk flags)
   -> planner (Gemini, then OpenAI, then a clearly labeled demo
   planner) -> DSL validator -> executor -> audit log.

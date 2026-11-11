@@ -1,22 +1,19 @@
 # SafeSort Quarantine Agent
 
-CS4680 Assignment 4. I built an AI agent that sorts a messy folder and
-quarantines risky files instead of deleting them or mixing them in with
-clean files.
-
-## The problem I solved
+SafeSort is an AI agent that sorts a messy folder and quarantines risky
+files instead of deleting them or mixing them in with clean files.
 
 A messy Downloads folder is easy to ignore until it is not. The usual
-advice from a chatbot is only text: it can suggest folders, but I still
-have to move every file by hand. Worse, a folder can hold a risky file
-next to a clean one: a PDF with embedded JavaScript, or a text file with
-a password in plain text. Sorting by extension alone would file the
-risky file with the clean ones. I wanted an agent that does the work,
-tells me the plan first, and keeps risky files separate.
+advice from a chatbot is only text: it can suggest folders, but the
+user still has to move every file by hand. Worse, a folder can hold a
+risky file next to a clean one: a PDF with embedded JavaScript, or a
+text file with a password in plain text. Sorting by extension alone
+would file the risky file with the clean ones. SafeSort does the work,
+shows the plan first, and keeps risky files separate.
 
-## How I built it
+## How it works
 
-Architecture (Lecture 12 pattern: LLM brain plus a separate actor):
+Architecture (LLM brain plus a separate actor):
 
 ```
 Web UI (templates/index.html)
@@ -29,9 +26,7 @@ Web UI (templates/index.html)
 ```
 
 The LLM never moves a file. It only outputs DSL. The executor turns
-validated DSL into real file operations. That is the same split the
-lecture used: build the actor first, define a small language for it,
-then let the model generate code in that language.
+validated DSL into real file operations.
 
 ## The DSL
 
@@ -55,10 +50,10 @@ QUARANTINE_FILE /home/user/Downloads/suspicious.pdf
 LIST_FILES /home/user/Downloads
 ```
 
-## Prompt patterns I used (20 percent of the grade)
+## Prompt design
 
-The full template is in `prompts/prompt_template.txt`. I used three
-patterns, the same family as my Assignment 3 project:
+The full template is in `prompts/prompt_template.txt`. It uses three
+patterns:
 
 1. **Persona.** "You are a cybersecurity file-triage analyst." The
    model sorts like a careful security analyst: organize clean files,
@@ -76,9 +71,9 @@ patterns, the same family as my Assignment 3 project:
 
 - There is no DELETE verb anywhere in the app. Quarantine (move into
   `<base>/Quarantine/`) is the safe alternative to deleting a file.
-- The plan is shown in the UI first. Nothing runs until I approve it,
-  and I can uncheck individual actions. Execution only accepts actions
-  from a plan this server generated.
+- The plan is shown in the UI first. Nothing runs until the user
+  approves it, and individual actions can be unchecked. Execution only
+  accepts actions from a plan this server generated.
 - Every path must be absolute and stay under the base folder. Paths
   with `..`, symlinks that escape the base, and paths outside the base
   are rejected at parse time and again at execution time.
@@ -94,7 +89,7 @@ patterns, the same family as my Assignment 3 project:
 ## How to run it
 
 ```bash
-cd cs4680-assignment-4
+cd safesort
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -145,8 +140,8 @@ planner and says so in the plan response.
   fake `sk-` key)
 - `credentials.txt` is quarantined (fake `password=` line)
 
-The app never mutates the bundled demo folder in my tests. Tests copy
-it to a temp folder first. In the UI, point the app at a copy if you
+Tests copy the demo folder to a temp folder first, so the bundled
+folder is never mutated. In the UI, point the app at a copy if you
 want to keep the original intact.
 
 ## Testing

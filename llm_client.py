@@ -8,7 +8,7 @@ and validate the DSL inside it -> return the plan.
 Providers, in priority order:
   1. Gemini  - used when GEMINI_API_KEY is set. My primary live
                provider. Model from GEMINI_MODEL (default:
-               gemini-3.8-flash).
+               gemini-3-flash-preview).
   2. OpenAI  - used when OPENAI_API_KEY is set (and no Gemini key).
                Model from OPENAI_MODEL (default: gpt-4o-mini).
   3. Demo    - no key set. The deterministic demo planner in
@@ -127,7 +127,7 @@ def _call_openai(prompt):
 
 
 def _call_gemini(prompt):
-    model = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
+    model = os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview")
     api_key = os.environ["GEMINI_API_KEY"]
     url = (
         "https://generativelanguage.googleapis.com/v1beta/models/"
