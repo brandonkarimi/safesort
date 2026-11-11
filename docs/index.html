@@ -3,122 +3,136 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SafeSort Quarantine Agent</title>
+<title>SafeSort</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --900:#0d1119; --800:#222830; --700:#333a47; --500:#5c667a; --400:#98a2b3;
-    --300:#d0d5dd; --200:#eaecf0; --100:#f2f4f6; --50:#f9fafb;
+    --900:#0d1119; --800:#222830; --700:#333a47; --500:#5c667a;
+    --300:#d0d5dd; --200:#eaecf0; --100:#f2f4f6;
     --rule:#8d919a40; --teal:#55b4a1; --teal-dark:#28515a;
-    --green:#2f7d6d; --amber:#b54708; --orange:#e04f16; --red:#dc001a;
   }
   * { box-sizing: border-box; }
   body { font-family: Onest, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin:0; background:#fff; color:var(--800); line-height:1.6; }
   .topbar { border-bottom:1px solid var(--rule); }
-  .topbar-inner { max-width: 960px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:10px; font-weight:600; color:var(--900); }
+  .topbar-inner { max-width: 880px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:10px; font-weight:600; color:var(--900); }
   .dot { width:10px; height:10px; border-radius:50%; background:var(--teal); }
-  main { max-width: 960px; margin: 0 auto; padding: 48px 16px 56px; }
-  .eyebrow { display:inline-block; font-size:13px; font-weight:500; color:var(--teal-dark); background:#55b4a11f; border-radius:3rem; padding:4px 12px; margin-bottom:16px; }
-  h1 { font-size: clamp(2.2rem, 6vw, 3.25rem); font-weight:400; letter-spacing:-.1rem; line-height:1.1; color:var(--900); margin: 0 0 14px; }
-  h2 { font-size: 1.5rem; font-weight:400; letter-spacing:-.03rem; color:var(--900); margin: 36px 0 12px; }
-  .sub { color: var(--500); font-size:1.125rem; margin: 0 0 32px; max-width: 44rem; }
-  label { display:block; font-weight:500; font-size:14px; color:var(--700); margin: 18px 0 6px; }
+  main { max-width: 880px; margin: 0 auto; padding: 40px 16px 48px; }
+  h1 { font-size: clamp(2.2rem, 6vw, 3rem); font-weight:400; letter-spacing:-.08rem; line-height:1.1; color:var(--900); margin: 0 0 8px; }
+  .sub { color: var(--500); font-size:1.1rem; margin: 0 0 8px; }
+  .badge { display:inline-block; font-size:12px; font-weight:600; padding:4px 12px; border-radius:3rem; background:#ffc55e33; color:#7a4a00; }
+  .small { color:var(--500); font-size:13px; }
+  .steps { display:flex; gap:8px; margin:28px 0 8px; }
+  .step { flex:1; text-align:center; font-size:13px; font-weight:600; color:var(--500); padding:10px 4px; border-radius:12px; background:var(--100); }
+  .step.active { background:#55b4a11f; color:var(--teal-dark); }
+  .step.done { color:var(--teal-dark); }
+  .step .n { display:inline-block; width:22px; height:22px; line-height:22px; border-radius:50%; background:#fff; border:1px solid var(--300); margin-right:6px; font-size:12px; }
+  .step.active .n { background:var(--teal); border-color:var(--teal); color:#fff; }
+  section { margin-top: 28px; padding-top: 24px; border-top:1px solid var(--rule); }
+  section:first-of-type { border-top:none; }
+  h2 { font-size: 1.25rem; font-weight:600; letter-spacing:-.02rem; color:var(--900); margin: 0 0 4px; }
+  .hint { color:var(--500); font-size:14px; margin:0 0 14px; }
+  .chips { display:flex; gap:8px; margin-bottom:14px; }
+  .chip { border:1px solid var(--300); background:#fff; border-radius:3rem; padding:8px 16px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; color:var(--900); }
+  .chip.active { background:var(--900); color:#fff; border-color:var(--900); }
   input, textarea { width:100%; padding:12px 14px; border:1px solid var(--300); border-radius:12px; font-size:15px; background:#fff; color:var(--900); font-family:inherit; }
   input:focus, textarea:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 3px #55b4a133; }
-  textarea { min-height: 72px; resize: vertical; line-height:1.55; }
-  .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:22px; }
+  textarea { min-height: 56px; resize: vertical; line-height:1.55; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:16px; }
   button { border:1px solid var(--rule); border-radius:3rem; height:2.8rem; padding:0 1.4rem; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
   .primary { background: var(--900); color:#fff; min-width:10rem; }
   .primary:hover:not(:disabled) { background: var(--700); }
   .secondary { background:#fff; color:var(--900); border-color:var(--300); }
   .secondary:hover { border-color:var(--900); }
   button:disabled { opacity:.4; cursor:not-allowed; }
-  .small { color:var(--500); font-size:13px; }
-  .badge { display:inline-block; font-size:12px; font-weight:600; padding:4px 12px; border-radius:3rem; background:var(--100); color:var(--700); }
-  .badge.demo { background:#ffc55e33; color:#7a4a00; }
+  .linkbtn { background:none; border:none; height:auto; padding:0; font-size:13px; color:var(--teal-dark); text-decoration:underline; cursor:pointer; }
   table { width:100%; border-collapse:collapse; font-size:14px; margin-top:12px; }
   th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--200); vertical-align:top; }
   th { color:var(--500); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04rem; }
-  code { font-size:13px; background:var(--100); padding:2px 6px; border-radius:6px; word-break:break-all; }
   pre { background:var(--900); color:#cdeee7; padding:18px; border-radius:16px; white-space:pre-wrap; word-break:break-word; line-height:1.6; margin:12px 0 0; font-size:13px; }
   .tag { display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:3rem; background:var(--100); color:var(--700); white-space:nowrap; }
   .risk-Low { background:var(--100); color:#485261; }
-  .risk-Medium { background:#ffc55e33; color:#7a4a00; }
   .risk-High { background:#e04f1622; color:#9a330c; }
   .risk-Critical { background:#dc001a1a; color:#a30014; }
   .verb-QUARANTINE_FILE { background:#dc001a1a; color:#a30014; }
-  .error { background:#dc001a0d; border:1px solid #dc001a33; color:#a30014; border-radius:16px; padding:16px 18px; margin-top:24px; display:none; }
-  .ok { background:#2f7d6d0d; border:1px solid #2f7d6d33; color:#1e5c4f; border-radius:16px; padding:16px 18px; margin-top:24px; display:none; }
-  section { display:none; margin-top: 40px; padding-top: 32px; border-top:1px solid var(--rule); }
-  footer { margin-top:56px; padding-top:20px; border-top:1px solid var(--rule); }
+  .error { background:#dc001a0d; border:1px solid #dc001a33; color:#a30014; border-radius:16px; padding:14px 18px; margin-top:16px; display:none; }
+  .ok { background:#2f7d6d0d; border:1px solid #2f7d6d33; color:#1e5c4f; border-radius:16px; padding:14px 18px; margin-top:16px; display:none; }
+  details { margin-top:16px; }
+  details summary { cursor:pointer; font-size:14px; font-weight:600; color:var(--teal-dark); }
+  footer { margin-top:48px; padding-top:16px; border-top:1px solid var(--rule); }
   .audit { font-size:13px; color:var(--700); }
   .audit li { margin-bottom:6px; }
 </style>
 </head>
 <body>
 <header class="topbar">
-  <div class="topbar-inner"><span class="dot"></span>SafeSort Quarantine Agent</div>
+  <div class="topbar-inner"><span class="dot"></span>SafeSort</div>
 </header>
 <main>
-  <span class="eyebrow">CS4680 Assignment 4</span>
   <h1>SafeSort</h1>
-  <p class="sub">I built an agent that sorts a messy folder and quarantines risky files. It shows you the plan first. Nothing moves until you approve it. Nothing is ever deleted.</p>
-  <p><span class="badge demo" id="mode_badge">Mode: demo</span> <span class="small">Static demo. Plans come from the local demo planner, not a live model. The full Flask app with live Gemini is in <a href="https://github.com/brandonkarimi/safesort">the repo</a>.</span></p>
+  <p class="sub">Sorts a messy folder. Quarantines the risky files. You approve the plan first.</p>
+  <p><span class="badge">Demo</span> <span class="small">Sample files. Nothing real is touched.</span></p>
 
-  <label for="base_path">Folder to sort</label>
-  <input id="base_path" value="/demo_folder">
-  <p class="small">This is a virtual demo folder with 10 files. Type <code>/demo_folder/Quarantine</code> after executing to see the quarantined files. Every path in the plan stays inside this folder.</p>
-
-  <label for="instruction">What should it do?</label>
-  <textarea id="instruction">Organize by type and quarantine anything suspicious.</textarea>
-
-  <div class="row">
-    <button class="primary" id="scan_btn" type="button">Scan folder</button>
-    <button class="secondary" id="plan_btn" type="button" disabled>Generate plan</button>
+  <div class="steps">
+    <div class="step active" id="step1"><span class="n">1</span>See your files</div>
+    <div class="step" id="step2"><span class="n">2</span>Make a plan</div>
+    <div class="step" id="step3"><span class="n">3</span>Run it</div>
   </div>
+
+  <section>
+    <h2>Your files (<span id="scan_count">0</span>)</h2>
+    <p class="hint">Two files are flagged risky. The rest are safe to sort.</p>
+    <div class="chips">
+      <button class="chip active" id="chip_root" type="button">Demo folder</button>
+      <button class="chip" id="chip_quar" type="button">Quarantine</button>
+    </div>
+    <div id="scan_list"></div>
+  </section>
+
+  <section>
+    <h2>What should it do?</h2>
+    <textarea id="instruction">Organize by type and quarantine anything suspicious.</textarea>
+    <div class="row">
+      <button class="primary" id="plan_btn" type="button">Make a plan</button>
+    </div>
+    <div id="plan_wrap" style="display:none">
+      <p class="hint" id="plan_summary" style="margin-top:16px"></p>
+      <table>
+        <thead><tr><th></th><th>File</th><th>Action</th><th>To</th><th>Risk</th><th>Why</th></tr></thead>
+        <tbody id="plan_rows"></tbody>
+      </table>
+      <p class="small" style="margin-top:10px">
+        <button class="linkbtn" id="select_all_btn" type="button">Select all</button> &middot;
+        <button class="linkbtn" id="select_none_btn" type="button">Select none</button>
+      </p>
+      <details>
+        <summary>Show the plan as code</summary>
+        <pre id="dsl_text"></pre>
+      </details>
+    </div>
+  </section>
+
+  <section id="exec_section" style="display:none">
+    <h2>Run it</h2>
+    <p class="hint">Only the checked actions will run. Nothing is deleted.</p>
+    <div class="row">
+      <button class="primary" id="execute_btn" type="button">Run checked actions</button>
+      <button class="secondary" id="rollback_btn" type="button" disabled>Undo</button>
+      <button class="secondary" id="reset_btn" type="button">Start over</button>
+    </div>
+    <div id="exec_result" style="margin-top:14px"></div>
+  </section>
 
   <div class="error" id="error_box"></div>
   <div class="ok" id="ok_box"></div>
 
-  <section id="scan_section">
-    <h2>Files found (<span id="scan_count">0</span>)</h2>
-    <div id="scan_list"></div>
-  </section>
+  <details>
+    <summary>Audit log</summary>
+    <ul class="audit" id="audit_list" style="margin-top:12px"></ul>
+  </details>
 
-  <section id="plan_section">
-    <h2>Plan</h2>
-    <p id="plan_summary"></p>
-    <table>
-      <thead><tr><th>Approve</th><th>File</th><th>Action</th><th>Destination</th><th>Risk</th><th>Why</th></tr></thead>
-      <tbody id="plan_rows"></tbody>
-    </table>
-    <div class="row">
-      <button class="primary" id="execute_btn" type="button">Approve and execute checked actions</button>
-      <button class="secondary" id="select_all_btn" type="button">Select all</button>
-      <button class="secondary" id="select_none_btn" type="button">Select none</button>
-    </div>
-    <h2>Plan in DSL</h2>
-    <pre id="dsl_text"></pre>
-  </section>
-
-  <section id="exec_section">
-    <h2>Execution</h2>
-    <div id="exec_result"></div>
-    <div class="row">
-      <button class="secondary" id="rollback_btn" type="button" disabled>Roll back this execution</button>
-      <button class="secondary" id="reset_btn" type="button">Reset demo</button>
-    </div>
-  </section>
-
-  <section id="audit_section">
-    <h2>Audit log</h2>
-    <ul class="audit" id="audit_list"></ul>
-    <div class="row"><button class="secondary" id="audit_btn" type="button">Refresh audit log</button></div>
-  </section>
-
-  <footer class="small">SafeSort never deletes a file. Risky files go to a Quarantine folder inside the base folder, so you can review them and roll back. This page is the static demo. To run SafeSort on your own folders, clone <a href="https://github.com/brandonkarimi/safesort">the repo</a> and run <code>python app.py</code>.</footer>
+  <footer class="small">SafeSort never deletes a file. To run it on your own folders, get the full app from <a href="https://github.com/brandonkarimi/safesort">github.com/brandonkarimi/safesort</a>.</footer>
 </main>
 
 <script>
@@ -141,25 +155,36 @@ const START_FILES = [
   { name: "suspicious.pdf", size: 192, risk: "Critical", reasons: ["Secret pattern: API key pattern (sk-...)", "Suspicious PDF marker: PDF contains a /JavaScript marker"] },
 ];
 
-let folders;       // folder path -> array of file objects
+let folders;       // folder key -> array of file objects
 let auditEntries;
+let currentFolder = "";
 let currentPlan = null;
+let currentPlanBase = "";
 let currentExecution = null;
 
-function resetState() {
+function resetState(clearAudit) {
   folders = { "": START_FILES.map((f) => ({ ...f, reasons: [...f.reasons] })) };
-  auditEntries = [];
+  if (clearAudit) auditEntries = [];
   currentPlan = null;
   currentExecution = null;
+  currentFolder = "";
+  setStep(1);
   $("rollback_btn").disabled = true;
-  $("plan_btn").disabled = true;
-  $("plan_section").style.display = "none";
+  $("plan_wrap").style.display = "none";
   $("exec_section").style.display = "none";
-  $("audit_section").style.display = "none";
+  $("exec_result").innerHTML = "";
   renderAudit();
+  showFolder("");
 }
-resetState();
+resetState(true);
 
+function setStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    const el = $("step" + i);
+    el.classList.toggle("active", i === n);
+    el.classList.toggle("done", i < n);
+  }
+}
 function esc(s) {
   const d = document.createElement("div");
   d.textContent = s == null ? "" : String(s);
@@ -185,17 +210,26 @@ function audit(event, detail) {
 function renderAudit() {
   $("audit_list").innerHTML = auditEntries.slice(-20).reverse().map(
     (e) => "<li><strong>" + esc(e.event) + "</strong> " + esc(JSON.stringify(e.detail)) + "</li>"
-  ).join("") || "<li>No audit entries yet.</li>";
-  $("audit_section").style.display = "block";
+  ).join("") || "<li>No actions yet.</li>";
 }
 
-// Resolve a typed path to a folder key ("" = demo folder root).
-function resolveFolder(raw) {
-  const p = (raw || "").trim();
-  if (!p || p === BASE || p === BASE + "/") return "";
-  if (p.startsWith(BASE + "/")) return p.slice(BASE.length + 1).replace(/\/$/, "");
-  throw new Error("Folder not found: " + p);
+function showFolder(key) {
+  currentFolder = key;
+  $("chip_root").classList.toggle("active", key === "");
+  $("chip_quar").classList.toggle("active", key === "Quarantine");
+  const files = folders[key] || [];
+  $("scan_count").textContent = files.length;
+  $("scan_list").innerHTML = files.length === 0
+    ? "<p class='small'>No files here yet.</p>"
+    : "<table><thead><tr><th>File</th><th>Size</th><th>Risk</th><th>Why</th></tr></thead><tbody>" +
+      files.map((f) =>
+        "<tr><td>" + esc(f.name) + "</td><td>" + esc(f.size) + " bytes</td>" +
+        "<td><span class='tag risk-" + esc(f.risk) + "'>" + esc(f.risk) + "</span></td>" +
+        "<td>" + esc(f.reasons.join("; ") || "No risk flags found.") + "</td></tr>"
+      ).join("") + "</tbody></table>";
 }
+$("chip_root").addEventListener("click", () => { clearMessages(); showFolder(""); });
+$("chip_quar").addEventListener("click", () => { clearMessages(); showFolder("Quarantine"); });
 
 function categoryFor(f) {
   const name = f.name.toLowerCase();
@@ -218,25 +252,27 @@ function buildPlan(inventory, instruction) {
       const reason = item.reasons.join("; ") || ("Risk is " + item.risk + ".");
       fileActions.push({ verb: "QUARANTINE_FILE", source: BASE + "/" + item.name,
         destination: BASE + "/Quarantine/" + item.name, file: item.name, risk: item.risk,
-        reason, rationale: "Quarantine " + item.name + ": " + reason + " I do not organize risky files with clean ones." });
+        destShort: "Quarantine/", reason,
+        rationale: "Quarantine " + item.name + ": " + reason + " I do not organize risky files with clean ones." });
       if (!foldersNeeded.includes("Quarantine")) foldersNeeded.push("Quarantine");
     } else {
       const folder = categoryFor(item);
       const reason = item.reasons.join("; ") || "No risk flags found.";
       fileActions.push({ verb: "MOVE_FILE", source: BASE + "/" + item.name,
         destination: BASE + "/" + folder + "/" + item.name, file: item.name, risk: item.risk,
-        reason, rationale: "Move " + item.name + " to " + folder + "/ by type and name. Risk is " + item.risk + "." });
+        destShort: folder + "/", reason,
+        rationale: "Move " + item.name + " to " + folder + "/ by type and name. Risk is " + item.risk + "." });
       if (!foldersNeeded.includes(folder)) foldersNeeded.push(folder);
     }
   }
   for (const folder of foldersNeeded) {
     actions.push({ verb: "CREATE_FOLDER", source: null, destination: BASE + "/" + folder,
-      file: null, risk: "Low", reason: "Folder needed for the plan.",
+      file: null, risk: "Low", destShort: folder + "/", reason: "Folder needed for the plan.",
       rationale: "Create the " + folder + " folder." });
   }
   actions.push(...fileActions);
   actions.push({ verb: "LIST_FILES", source: null, destination: BASE,
-    file: null, risk: "Low", reason: "Verify the result after the moves.",
+    file: null, risk: "Low", destShort: "—", reason: "Verify the result after the moves.",
     rationale: "List the base folder to verify the result." });
   actions.forEach((a, i) => { a.id = "a" + (i + 1); });
   const dsl = actions.map((a) => {
@@ -245,56 +281,33 @@ function buildPlan(inventory, instruction) {
     if (a.verb === "QUARANTINE_FILE") return "QUARANTINE_FILE " + a.source;
     return "LIST_FILES " + a.destination;
   }).join("\n") + "\n";
-  const summary = "Demo plan for " + inventory.length + " file(s)" +
-    (instruction && instruction.trim() ? " (" + instruction.trim() + ")" : "") +
-    ". Risky files go to Quarantine. Clean files go to folders by type and name.";
+  const summary = "Plan for " + inventory.length + " files. Risky files go to Quarantine. Clean files go to folders by type.";
   return { dsl, actions, summary };
 }
 
-$("scan_btn").addEventListener("click", () => {
-  clearMessages();
-  let key;
-  try { key = resolveFolder($("base_path").value); }
-  catch (e) { showError(e.message); return; }
-  const files = folders[key];
-  if (!files) { showError("Folder not found: " + $("base_path").value); return; }
-  $("scan_count").textContent = files.length;
-  $("scan_list").innerHTML = files.length === 0
-    ? "<p class='small'>No files in this folder.</p>"
-    : "<table><thead><tr><th>File</th><th>Size</th><th>Risk</th><th>Why</th></tr></thead><tbody>" +
-      files.map((f) =>
-        "<tr><td>" + esc(f.name) + "</td><td>" + esc(f.size) + " bytes</td>" +
-        "<td><span class='tag risk-" + esc(f.risk) + "'>" + esc(f.risk) + "</span></td>" +
-        "<td>" + esc(f.reasons.join("; ") || "No risk flags found.") + "</td></tr>"
-      ).join("") + "</tbody></table>";
-  $("scan_section").style.display = "block";
-  $("plan_btn").disabled = false;
-  showOk("Scan complete. " + files.length + " file(s) found.");
-});
-
 $("plan_btn").addEventListener("click", () => {
   clearMessages();
-  let key;
-  try { key = resolveFolder($("base_path").value); }
-  catch (e) { showError(e.message); return; }
-  const files = folders[key];
-  if (!files) { showError("Folder not found: " + $("base_path").value); return; }
-  if (files.length === 0) { showError("The folder is empty. Add files and try again."); return; }
+  const files = folders[currentFolder] || [];
+  if (files.length === 0) { showError("This folder is empty."); return; }
   const plan = buildPlan(files, $("instruction").value);
   currentPlan = plan;
+  currentPlanBase = currentFolder;
   $("plan_summary").textContent = plan.summary;
   $("dsl_text").textContent = plan.dsl;
   $("plan_rows").innerHTML = plan.actions.map((a) =>
     "<tr><td><input type='checkbox' class='approve' value='" + esc(a.id) + "' checked></td>" +
     "<td>" + esc(a.file || "") + "</td>" +
     "<td><span class='tag verb-" + esc(a.verb) + "'>" + esc(a.verb) + "</span></td>" +
-    "<td><code>" + esc(a.destination || "") + "</code></td>" +
+    "<td>" + esc(a.destShort || "") + "</td>" +
     "<td><span class='tag risk-" + esc(a.risk) + "'>" + esc(a.risk) + "</span></td>" +
     "<td>" + esc(a.rationale || a.reason || "") + "</td></tr>"
   ).join("");
-  $("plan_section").style.display = "block";
+  $("plan_wrap").style.display = "block";
+  $("exec_section").style.display = "block";
+  setStep(2);
   audit("plan_generated", { mode: "demo", actions: plan.actions.length });
-  showOk("Plan ready. Review it, uncheck anything you do not want, then approve and execute.");
+  renderAudit();
+  showOk("Plan ready. Uncheck anything you do not want, then run it.");
 });
 
 $("select_all_btn").addEventListener("click", () => {
@@ -306,10 +319,11 @@ $("select_none_btn").addEventListener("click", () => {
 
 $("execute_btn").addEventListener("click", () => {
   clearMessages();
-  if (!currentPlan) { showError("Generate a plan first."); return; }
+  if (!currentPlan) { showError("Make a plan first."); return; }
   const approved = Array.from(document.querySelectorAll(".approve:checked")).map((c) => c.value);
-  if (approved.length === 0) { showError("No actions approved. Check at least one action."); return; }
+  if (approved.length === 0) { showError("No actions checked. Check at least one action."); return; }
   const executed = [], skipped = [], errors = [], moves = [];
+  const src = folders[currentPlanBase] || [];
   for (const a of currentPlan.actions) {
     if (!approved.includes(a.id)) { skipped.push(a.id); continue; }
     if (a.verb === "CREATE_FOLDER") {
@@ -319,10 +333,9 @@ $("execute_btn").addEventListener("click", () => {
     } else if (a.verb === "MOVE_FILE" || a.verb === "QUARANTINE_FILE") {
       const destFolder = a.verb === "QUARANTINE_FILE" ? "Quarantine"
         : a.destination.slice(BASE.length + 1, a.destination.lastIndexOf("/"));
-      const root = folders[""];
-      const idx = root.findIndex((f) => f.name === a.file);
+      const idx = src.findIndex((f) => f.name === a.file);
       if (idx === -1) { errors.push(a.id + ": file not found"); continue; }
-      const file = root.splice(idx, 1)[0];
+      const file = src.splice(idx, 1)[0];
       if (!(destFolder in folders)) folders[destFolder] = [];
       folders[destFolder].push(file);
       moves.push({ file: a.file, from: a.source, to: a.destination });
@@ -331,48 +344,48 @@ $("execute_btn").addEventListener("click", () => {
       executed.push(a.id);
     }
   }
-  currentExecution = { moves };
+  currentExecution = { moves, base: currentPlanBase };
   $("exec_result").innerHTML =
-    "<p>Executed: " + esc(executed.join(", ") || "none") + "</p>" +
-    "<p>Skipped: " + esc(skipped.join(", ") || "none") + "</p>" +
-    "<p>Errors: " + esc(errors.length ? JSON.stringify(errors) : "none") + "</p>" +
-    "<p>Moves recorded for rollback: " + esc(moves.length) + "</p>";
-  $("exec_section").style.display = "block";
+    "<p><strong>Done.</strong> Ran " + executed.length + " of " + currentPlan.actions.length +
+    " actions. Errors: " + (errors.length ? esc(JSON.stringify(errors)) : "none") +
+    ". " + moves.length + " file(s) moved.</p>";
+  setStep(3);
   $("rollback_btn").disabled = false;
   audit("executed", { executed, errors });
-  showOk("Execution finished. Use Roll back to restore the moved files.");
   renderAudit();
+  showFolder(currentFolder);
+  showOk("Done. Check the Quarantine tab to see the risky files, or undo to put everything back.");
 });
 
 $("rollback_btn").addEventListener("click", () => {
   clearMessages();
-  if (!currentExecution) { showError("Nothing to roll back."); return; }
+  if (!currentExecution) { showError("Nothing to undo."); return; }
   const restored = [];
+  const dest = folders[currentExecution.base] || [];
   for (const m of currentExecution.moves) {
     const destFolder = m.to.slice(BASE.length + 1, m.to.lastIndexOf("/"));
     const arr = folders[destFolder] || [];
     const idx = arr.findIndex((f) => f.name === m.file);
     if (idx !== -1) {
-      folders[""].push(arr.splice(idx, 1)[0]);
+      dest.push(arr.splice(idx, 1)[0]);
       restored.push(m.file);
     }
   }
-  folders[""].sort((a, b) => a.name.localeCompare(b.name));
-  $("exec_result").innerHTML += "<p>Rolled back: " + esc(restored.join(", ") || "none") + ". Errors: none</p>";
+  dest.sort((a, b) => a.name.localeCompare(b.name));
+  $("exec_result").innerHTML += "<p>Undone: " + esc(restored.join(", ") || "none") + ".</p>";
   audit("rollback", { restored });
-  showOk("Rollback finished.");
   renderAudit();
+  showFolder(currentFolder);
+  showOk("Undone. All files are back where they started.");
 });
 
 $("reset_btn").addEventListener("click", () => {
-  resetState();
-  $("base_path").value = BASE;
+  resetState(false);
+  audit("reset", { files: 10 });
+  renderAudit();
   clearMessages();
-  showOk("Demo reset. The 10 files are back in the demo folder.");
+  showOk("Started over. The 10 files are back in the demo folder.");
 });
-
-$("audit_btn").addEventListener("click", renderAudit);
-renderAudit();
 </script>
 </body>
 </html>
